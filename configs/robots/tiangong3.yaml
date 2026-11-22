@@ -1,0 +1,115 @@
+# Tiangong3 (29-DOF, head fixed) unified robot configuration for Retarget_X
+name: tiangong3
+dof: 29
+standing_root_height_m: 0.99916
+g1_standing_root_height_m: 0.79386
+mass_kg: 65.82
+
+model:
+  headless_scene: assets/tiangong3/scene_mjx_torque_tracking_headless.xml
+  dtmr_robot_name: tiangong3_headless
+
+joint_names:
+  - hip_pitch_l_joint
+  - hip_roll_l_joint
+  - hip_yaw_l_joint
+  - knee_pitch_l_joint
+  - ankle_pitch_l_joint
+  - ankle_roll_l_joint
+  - hip_pitch_r_joint
+  - hip_roll_r_joint
+  - hip_yaw_r_joint
+  - knee_pitch_r_joint
+  - ankle_pitch_r_joint
+  - ankle_roll_r_joint
+  - waist_yaw_joint
+  - waist_roll_joint
+  - waist_pitch_joint
+  - shoulder_pitch_l_joint
+  - shoulder_roll_l_joint
+  - shoulder_yaw_l_joint
+  - elbow_pitch_l_joint
+  - elbow_yaw_l_joint
+  - wrist_pitch_l_joint
+  - wrist_roll_l_joint
+  - shoulder_pitch_r_joint
+  - shoulder_roll_r_joint
+  - shoulder_yaw_r_joint
+  - elbow_pitch_r_joint
+  - elbow_yaw_r_joint
+  - wrist_pitch_r_joint
+  - wrist_roll_r_joint
+
+# Tuned PD gains for 65.8kg Tiangong3 (well-damped ankle authority matched to descriptor kd)
+pd:
+  kp: [300, 300, 150, 350, 55, 38,
+       300, 300, 150, 350, 55, 38,
+       400, 400, 400,
+       150, 150, 130, 130, 50, 20, 20,
+       150, 150, 130, 130, 50, 20, 20]
+  kd: [15.0, 15.0, 7.5, 15.0, 3.75, 2.1,
+       15.0, 15.0, 7.5, 15.0, 3.75, 2.1,
+       7.5, 15.0, 15.0,
+       7.4, 7.4, 5.9, 5.9, 5.0, 2.0, 2.0,
+       7.4, 7.4, 5.9, 5.9, 5.0, 2.0, 2.0]
+
+foot_collision_geoms:
+  - left_foot1_collision
+  - left_foot2_collision
+  - left_foot3_collision
+  - right_foot1_collision
+  - right_foot2_collision
+  - right_foot3_collision
+
+conditioning:
+  savgol_window: 7
+  savgol_polyorder: 3
+  ground_smooth_window: 9
+  flight_clearance_threshold_m: 0.035
+  spawn_clearance_m: 0.002
+
+# Difficulty-adaptive MPC recipes for Stage 3 (DTMR MuJoCo Warp)
+# Note: w_foot_slip is kept at 0.0 (ablation showed >0 pins stance feet on dance/pivots).
+mpc_profiles:
+  low:
+    Nsample: 1024
+    Hsample: 30
+    Hnode: 6
+    Ndiffuse: 5
+    Ndiffuse_init: 5
+    Ndiffuse_warmup_steps: 10
+    sigma_scale: 0.13
+    sigma_scale_phi: 0.25
+    w_dphi: 22.0
+    w_pelvis: 30.0
+    w_pos_relpelvis: 14.0
+    w_orient_pure: 5.5
+    w_foot_slip: 0.0
+  medium:
+    Nsample: 1024
+    Hsample: 36
+    Hnode: 7
+    Ndiffuse: 5
+    Ndiffuse_init: 5
+    Ndiffuse_warmup_steps: 10
+    sigma_scale: 0.14
+    sigma_scale_phi: 0.30
+    w_dphi: 20.0
+    w_pelvis: 30.0
+    w_pos_relpelvis: 15.0
+    w_orient_pure: 5.5
+    w_foot_slip: 0.0
+  high:
+    Nsample: 1536
+    Hsample: 42
+    Hnode: 8
+    Ndiffuse: 5
+    Ndiffuse_init: 5
+    Ndiffuse_warmup_steps: 14
+    sigma_scale: 0.15
+    sigma_scale_phi: 0.35
+    w_dphi: 14.0
+    w_pelvis: 32.0
+    w_pos_relpelvis: 16.0
+    w_orient_pure: 6.5
+    w_foot_slip: 0.0

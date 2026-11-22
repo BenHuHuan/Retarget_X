@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "retarget-x"
+version = "0.1.0"
+description = "Unified Kinodynamic & Dense Temporal Motion Retargeting for Humanoid Robots (fusing hhtools + DTMR)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "BenHuHuan" }]
+dependencies = [
+    "numpy>=1.24,<2.0",
+    "scipy>=1.10",
+    "pyyaml>=6.0",
+    "mujoco>=3.2.0",
+    "tqdm>=4.65",
+]
+
+[project.optional-dependencies]
+dtmr = [
+    "mujoco==3.7.0",
+    "mujoco-warp==3.7.0.1",
+    "warp-lang>=1.12.0,<1.13",
+    "fastdtw",
+    "joblib",
+]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+retarget-x = "retarget_x.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
