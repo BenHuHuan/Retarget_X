@@ -12,7 +12,7 @@
 [![No-Fall](https://img.shields.io/badge/Physical%20No--Fall-100%25%20(vs%201.7%25%20hhtools)-10b981?style=for-the-badge)](#benchmark-results-on-tiangong3)
 [![License](https://img.shields.io/badge/License-Apache--2.0-f59e0b?style=for-the-badge)](LICENSE)
 
-[**📊 Interactive Web Report (`docs/index.html`)**](docs/index.html) · [**📈 Benchmark Data**](benchmark/tiangong3_bones_seed_nonhoi/) · [**🚀 Quick Start**](#quick-start) · [**🔬 Ablation Study**](#ablation-study)
+[**📊 Interactive Web Report (`docs/index.html`)**](docs/index.html) · [**⚡ Trajectory Optimization (`TDOT`)**](#trajectory-optimization-tdot-integration) · [**📈 Benchmark Data**](benchmark/tiangong3_bones_seed_nonhoi/) · [**🚀 Quick Start**](#quick-start) · [**🔬 Ablation Study**](#ablation-study)
 
 </div>
 
@@ -103,6 +103,34 @@ flowchart LR
 
 1. **`w_foot_slip` 关键发现**：初版 `Retarget_X v1` 开启了 `w_foot_slip = 0.5`，导致舞蹈/原地旋转动作中支撑脚被过度“钉死”，骨盆无法跟上参考位移（`egypt_dance` 退化至 `84.4 mm`）。在 `v2` 中关闭 `w_foot_slip = 0.0` 并匹配天工3踝关节阻尼比（`kp=[55, 38], kd=[3.75, 2.1]`）后，`egypt_dance` 直接降至 **`26.9 mm`**（4.8 分钟，甚至优于 19.9 分钟的 Vanilla DTMR 4096 `28.0 mm`），同时 `high_jump` 进一步降至 **`61.7 mm` (-60.9%)**。
 2. **误差分析与 v0.2 优化方向**：当前 `high` 档同时包含“腾空跳跃”和“高速弧线慢跑”，低 `w_dphi=14` 对腾空跳跃极度有利，但在非腾空的高速弯道跑（`jog_arc_cw_start`, `turn_start_jog`）上会允许轻微相位漂移。v0.2 将把 `high` 细分为 `high_aerial`（`w_dphi=12–14`）和 `high_running`（`w_dphi=18–20`）。
+
+---
+
+## Trajectory Optimization (TDOT Integration)
+
+`Retarget_X` now integrates the full [**TDOT**](https://github.com/BenHuHuan/TDOT) dynamic trajectory optimization suite verbatim (3D Three.js URDF Editor + 2D Curve Editor + preloaded GPU `NablaEngine`/`NablaMimic` daemon + MuJoCo 4.0 IEEE FP32 closed-loop verifier + unified NPZ/CSV export), accessible directly via the **`Trajectory Optimization`** button in both the web report (`docs/index.html`) and the 3D editor UI (`templates/index.html`).
+
+### Launch TDOT 3D Editor + Trajectory Optimization Web App
+
+```bash
+# Optional first-time setup (auto-detects existing ~/NablaMimic/.venv and ~/mjlab/.venv-mj4)
+bash scripts/setup_tdot.sh
+
+# Launch 3D Editor & Trajectory Optimization Web App
+bash scripts/launch_tdot.sh --host 127.0.0.1 --port 5000 --preload-buckets 512
+```
+
+Open **http://127.0.0.1:5000**, load a motion (e.g. `weird_dance_6s.npz`), and click **`Trajectory Optimization`** in either the top HUD bar or the right-hand Dynamic TO panel.
+
+### Headless Trajectory Optimization CLI
+
+```bash
+python -m tdot.cli optimize \
+  --input static/samples/weird_dance_6s.npz \
+  --out outputs/fixed_dance.npz \
+  --csv-out outputs/fixed_dance_30hz.csv \
+  --preset standard
+```
 
 ---
 

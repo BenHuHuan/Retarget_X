@@ -26,10 +26,16 @@ dtmr = [
     "fastdtw",
     "joblib",
 ]
+tdot = [
+    "flask>=3.0",
+    "torch>=2.4",
+]
 dev = ["pytest>=7.0"]
 
 [project.scripts]
 retarget-x = "retarget_x.cli:main"
+tdot = "tdot.cli:main"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.setuptools]
+package-dir = {"retarget_x" = "src/retarget_x", "tdot" = "tdot"}
+packages = ["retarget_x", "tdot"]

@@ -180,11 +180,39 @@
       在天工3非 HOI 动作集上实现 <strong>100% 物理不倒</strong>、参考穿地归零 <strong>0.00 mm</strong>，并较 Vanilla DTMR 降低 <strong>15.9% MPJPE</strong> 与 <strong>18.1% 骨盆误差</strong>。
     </p>
     <div class="hero-actions">
+      <a class="btn btn-primary" href="#trajectory-optimization" onclick="openToSection(event)" style="background: linear-gradient(90deg, #059669, #0284c7);">⚡ Trajectory Optimization</a>
       <a class="btn btn-primary" href="https://github.com/BenHuHuan/Retarget_X" target="_blank">GitHub Repository</a>
       <a class="btn btn-ghost" href="#charts">查看对比图表</a>
       <a class="btn btn-ghost" href="#explorer">交互式数据浏览器</a>
     </div>
   </div>
+
+  <section id="trajectory-optimization">
+    <h2><span class="dot" style="background: var(--emerald)"></span>Trajectory Optimization (TDOT Engine)</h2>
+    <div class="stage-card" style="padding: 24px 26px; border-color: rgba(52,211,153,0.35); background: linear-gradient(145deg, rgba(16,185,129,0.08), rgba(18,24,38,0.95));">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;">
+        <div style="flex: 1 1 460px;">
+          <div class="stage-num" style="color: var(--emerald);">Integrated Verbatim · NablaMimic + SuperMimic-lite + MuJoCo 4.0 + 3D Editor</div>
+          <h3 style="font-size: 20px; margin-bottom: 10px;">TDOT Dynamic Trajectory Optimization</h3>
+          <p style="margin-bottom: 14px;">
+            已完整合入 <strong>TDOT</strong> 全部功能（3D URDF 编辑器 + 2D 曲线编辑 + 预加载 GPU NablaEngine 守护进程 + MuJoCo 4.0 IEEE FP32 闭环验证 + 统一 NPZ/CSV 导出）。
+            单条 6s 动作在本地 RTX 4080 上仅需 <strong>10.53 s</strong>（100% MuJoCo 4.0 存活，32.5 mm MPJPE）。
+          </p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn btn-primary" href="http://127.0.0.1:5000" target="_blank" style="background: linear-gradient(90deg, #059669, #0284c7);">Open Trajectory Optimization UI (localhost:5000)</a>
+            <button class="btn btn-ghost" style="cursor:pointer;" onclick="copyCmd('bash scripts/launch_tdot.sh --host 127.0.0.1 --port 5000 --preload-buckets 512', this)">复制 Web 启动命令</button>
+            <button class="btn btn-ghost" style="cursor:pointer;" onclick="copyCmd('python -m tdot.cli optimize --input static/samples/weird_dance_6s.npz --out outputs/fixed_dance.npz --preset standard', this)">复制 CLI 优化命令</button>
+          </div>
+        </div>
+        <div style="flex: 1 1 320px; background: rgba(11,15,23,0.75); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; color: #cbd5e1;">
+          <div style="color: var(--muted); margin-bottom: 6px;"># 1. 启动 TDOT 3D 编辑器与预加载 TO 引擎</div>
+          <div style="color: var(--emerald); margin-bottom: 10px;">bash scripts/launch_tdot.sh --host 127.0.0.1 --port 5000 --preload-buckets 512</div>
+          <div style="color: var(--muted); margin-bottom: 6px;"># 2. 无头 CLI 轨迹优化</div>
+          <div style="color: var(--cyan);">python -m tdot.cli optimize --input static/samples/weird_dance_6s.npz --out outputs/fixed_dance.npz --preset standard</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div class="kpi-grid">
     <div class="kpi" style="--accent: var(--emerald)">
@@ -329,6 +357,20 @@ function switchTab(id, btn) {
   btn.classList.add('active');
   ['paired', 'dtmr18', 'hht120'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('hidden', t !== id);
+  });
+}
+
+function openToSection(e) {
+  if (e) e.preventDefault();
+  const el = document.getElementById('trajectory-optimization');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyCmd(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const prev = btn.textContent;
+    btn.textContent = '已复制 ✓';
+    setTimeout(() => { btn.textContent = prev; }, 1500);
   });
 }
 
