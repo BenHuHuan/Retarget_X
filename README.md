@@ -2,17 +2,17 @@
 
 # Retarget_X
 
-**Unified Kinodynamic & Dense Temporal Motion Retargeting for Humanoid Robots**
+**Unified Kinodynamic Retargeting, Dense Temporal MPC & Dynamic Trajectory Optimization Suite for Humanoid Robots**
 
-*融合 `hhtools` 跨本体极速运动学重定向与 `DTMR` MuJoCo Warp 物理时序优化的下一代人形机器人重定向引擎*
+*融合 `hhtools`（跨本体极速运动学重定向）· `DTMR`（MuJoCo Warp 物理时序 MPC）· `TDOT`（3D URDF 编辑器与动态轨迹优化引擎）*
 
-[![Robot](https://img.shields.io/badge/Robot-Tiangong3%20(29--DOF%20%C2%B7%2065.8kg)-0ea5e9?style=for-the-badge)](configs/robots/tiangong3.yaml)
+[![Robots](https://img.shields.io/badge/Robots-Tiangong3%20(29--DOF)%20%7C%20Unitree%20G1%20(29--DOF)-0ea5e9?style=for-the-badge)](configs/robots/tiangong3.yaml)
 [![Dataset](https://img.shields.io/badge/Benchmark-BONES--SEED%20Non--HOI%20(120%20Clips)-8b5cf6?style=for-the-badge)](benchmark/tiangong3_bones_seed_nonhoi/)
 [![MPJPE](https://img.shields.io/badge/MPJPE%20vs%20DTMR--15.9%25-10b981?style=for-the-badge)](#benchmark-results-on-tiangong3)
-[![No-Fall](https://img.shields.io/badge/Physical%20No--Fall-100%25%20(vs%201.7%25%20hhtools)-10b981?style=for-the-badge)](#benchmark-results-on-tiangong3)
+[![TDOT](https://img.shields.io/badge/Trajectory%20Optimization-TDOT%203D%20Editor%20%2B%20MuJoCo%204.0-06b6d4?style=for-the-badge)](#trajectory-optimization-tdot)
 [![License](https://img.shields.io/badge/License-Apache--2.0-f59e0b?style=for-the-badge)](LICENSE)
 
-[**📊 Interactive Web Report (`docs/index.html`)**](docs/index.html) · [**⚡ Trajectory Optimization (`TDOT`)**](#trajectory-optimization-tdot-integration) · [**📈 Benchmark Data**](benchmark/tiangong3_bones_seed_nonhoi/) · [**🚀 Quick Start**](#quick-start) · [**🔬 Ablation Study**](#ablation-study)
+[**📊 Interactive Web Report (`docs/index.html`)**](docs/index.html) · [**⚡ Trajectory Optimization (`TDOT`)**](#trajectory-optimization-tdot) · [**📈 Benchmark Data**](benchmark/tiangong3_bones_seed_nonhoi/) · [**🚀 Quick Start**](#quick-start) · [**🔬 Ablation Study**](#ablation-study)
 
 </div>
 
@@ -29,34 +29,41 @@
 | **Extreme Dynamic Clip (`high_jump`) MPJPE** | Falls at 30.1% | `157.8 mm` | **`61.7 mm`** | **-60.9% vs DTMR** |
 | **Classic Dance (`egypt_dance`) MPJPE / Time** | Falls at 17.2% | `28.0 mm` (19.9m) / `32.5 mm` (4.1m) | **`26.9 mm` (4.8m)** | **4.1× faster & beats 4096** |
 
-> 💡 **交互式前端评测报告**：仓库内置单文件暗色科研风交互网页 [`docs/index.html`](docs/index.html)（支持 GitHub Pages 直接开启，或本地浏览器直接打开），包含 KPI 概览卡片、高清图表画廊以及可实时搜索/筛选的 **8 条三方精测 / 18 条 Vanilla DTMR / 120 条 BONES-SEED Non-HOI** 完整数据浏览器。
+> 💡 **双前端界面**：
+> - **评测报告页 [`docs/index.html`](docs/index.html)**：单文件暗色科研风交互网页（支持 GitHub Pages 直接开启或本地打开），包含 KPI 卡片、高清图表画廊、120/18/8 条实时搜索筛选浏览器，以及一键跳转 **`Trajectory Optimization`** 面板。
+> - **3D 动作编辑与轨迹优化应用 [`templates/index.html`](templates/index.html)**：完整合入的 **TDOT** Three.js 3D URDF Viewer + 2D 曲线编辑器 + 顶部/侧边 **`Trajectory Optimization`** 按钮，实时展示物理进度条与优化前后对比。
 
 ---
 
-## Architecture: 4-Stage Kinodynamic Pipeline
+## Unified Architecture
 
 ```mermaid
 flowchart LR
-    A["Human / Source Motion\n(BONES-SEED Non-HOI, BVH, G1 CSV)"] --> B["Stage 1: Enhanced Kinematic IK\n• hhtools Newton-LM IK\n• Exact sole-height ratio (1.2586)\n• Optional T90/T60/Elbow45 multi-pose"]
+    A["Human / Source Motion\n(BONES-SEED Non-HOI, BVH, G1 CSV, NPZ)"] --> B["Stage 1: Enhanced Kinematic IK\n• hhtools Newton-LM IK\n• Exact sole-height ratio (1.2586)\n• Optional T90/T60/Elbow45 multi-pose"]
     B --> C["Stage 2: Kinodynamic Conditioning\n• Zero-phase Savitzky-Golay filter\n• Joint-limit clamping\n• Contact-aware ground projection\n• Motion dynamism profiler"]
-    C --> D["Stage 3: Difficulty-Adaptive DTMR\n• MuJoCo Warp Annealed MPPI\n• low / medium / high budgets\n• Adaptive horizon & w_dphi\n• Well-damped ankle PD"]
-    D --> E["Stage 4: Audit & Unified Export\n• Kinematic + dynamic audit\n• Clean 50 Hz RL/Sim NPZ\n• JSON & HTML report"]
+    C --> D["Stage 3: Difficulty-Adaptive DTMR\n• MuJoCo Warp Annealed MPPI\n• low / medium / high budgets\n• Adaptive horizon & w_dphi"]
+    C -. "Interactive Edit / Fast TO" .-> T["TDOT: Trajectory Optimization\n• 3D URDF Viewer + 2D Curve Editor\n• Preloaded NablaMimic GPU Daemon\n• MuJoCo 4.0 IEEE FP32 Verifier"]
+    D --> E["Stage 4: Audit & Unified Export\n• Kinematic + dynamic audit\n• Clean 50 Hz RL/Sim NPZ & 30 Hz CSV"]
+    T --> E
 ```
 
-### Why Fuse `hhtools` and `DTMR`?
+### Core Capabilities
 
-1. **`hhtools` 极快且通用，但缺乏物理可行性**：在 120 条非 HOI BONES-SEED 动作（28,445 帧 @ 50Hz）上平均仅需 `1.61 s/clip`，但在天工3真实 MuJoCo 动力学与 SDK-A PD 增益下直接回放，**118/120 (98.3%) 失衡跌倒**，平均仅能存活 20.4% 进度；同时存在 `15–77 mm` 地面穿透与高频 LM-IK 加速度毛刺。
-2. **`DTMR` 物理极稳，但不做跨本体运动学且算力昂贵**：无法原生处理天工3，默认 `Nsample=4096, Hsample=44` 在 L4 GPU 上单条需 `~20 分钟`，且上游参考的穿地与抖动会直接拖垮高难动态动作（如 `high_jump` 误差达 `157.8 mm`）。
-3. **`Retarget_X` 的核心创新（Stage 2 桥接层 + Stage 3 难度自适应）**：
-   - **接触感知地面投影**（[`stage2_conditioning.py`](src/retarget_x/stage2_conditioning.py)）：基于天工3精确拟合的 6 根脚底胶囊体，逐帧消除地面穿透（`25.0 mm → 0.00 mm`）并完整保留腾空飞行相位（`> 35 mm` 离地高度）。
-   - **保形零相位平滑**：Savitzky-Golay 零相位滤波（窗口 7 帧，3 阶）将关节加速度 P95 毛刺削减 **12%–37%**，且零相位滞后。
-   - **动力学难度画像 + 自适应 MPC**（[`stage3_physics_mpc.py`](src/retarget_x/stage3_physics_mpc.py)）：按水平速度、加速度、腾空占比、偏航角速度与下蹲深度自动划分 `low / medium / high`，动态分配最优 `Nsample / Hsample / Hnode / w_dphi`，把计算效率提升 **~4.8×** 同时在难例上取得大幅精度飞跃。
+1. **Kinodynamic Retargeting (`src/retarget_x/`)** — 融合 `hhtools` 与 `DTMR`：
+   - **Stage 1 ([`stage1_kinematic.py`](src/retarget_x/stage1_kinematic.py))**：精确 SDK 脚底站立高度比（天工3 `0.999 m` / G1 `0.794 m = 1.2586`）消除 `1.3 m` 回退穿地 Bug，支持多姿态校准整段择优。
+   - **Stage 2 ([`stage2_conditioning.py`](src/retarget_x/stage2_conditioning.py))**：零相位 Savitzky-Golay 滤波（关节加速度 P95 降 **12%–37%**）+ 接触感知脚底胶囊体地面投影（穿地 P95 `25.0 mm → 0.00 mm` 且保留腾空相位）+ 动力学难度画像（`low / medium / high`）。
+   - **Stage 3 ([`stage3_physics_mpc.py`](src/retarget_x/stage3_physics_mpc.py))**：难度自适应 MuJoCo Warp MPPI（自动分配 `Nsample / Hsample / Hnode / w_dphi` + 匹配阻尼比的踝关节增益，速度提升 **~4.8×**）。
+   - **Stage 4 ([`stage4_audit_export.py`](src/retarget_x/stage4_audit_export.py))**：双维度运动学/动力学审计并导出标准 50 Hz RL/Sim `.npz`。
+2. **Dynamic Trajectory Optimization & 3D Editor (`tdot/`, `templates/`, `static/`)** — 完整原封合入 [**TDOT**](https://github.com/BenHuHuan/TDOT)：
+   - 预加载 GPU `NablaEngine` + `NablaMimic` + `SuperMimic-lite` 守护进程，热启动后单条 6s 动作端到端仅需 **10.53 s**（RTX 4080 Laptop）。
+   - ~190 ms `MuJoCo 4.0` 严格 IEEE FP32 闭环验证，实时 SSE 物理进度条（`BALANCE → REFINE → VERIFY`）与优化前后 3D / 2D 橙色虚线对比。
+   - 统一导出同时兼容 `robot-motion-editor` 与 `MLAB4_Fast` 的 `.npz` 及 30 Hz LAFAN1 `.csv`。
 
 ---
 
 ## Benchmark Results on Tiangong3
 
-所有实验均在 **天工3（Tiangong3, 29-DOF, 65.8 kg）** 上进行，数据严格选自 **BONES-SEED Non-HOI**（过滤条件：`content_props == 0`、`package != Interactions`、`is_mirror == False` 且排除所有含箱子/椅子/门/道具等物体交互词的动作），物理仿真全部运行于 Google Colab **NVIDIA L4 (24 GB)**。
+所有重定向对比实验均在 **天工3（Tiangong3, 29-DOF, 65.8 kg）** 上进行，数据严格选自 **BONES-SEED Non-HOI**（过滤 `content_props == 0`、`package != Interactions`、`is_mirror == False` 及所有物体交互关键词），物理仿真运行于 Google Colab **NVIDIA L4 (24 GB)**。
 
 ### 1. Whole-Body MPJPE & Pelvis Base Position Error (8-Clip Head-to-Head)
 
@@ -101,53 +108,46 @@ flowchart LR
   <img src="docs/assets/ablation_tradeoff.png" alt="Ablation Study on Foot-Slip Weight and Speed-Accuracy Tradeoff" width="100%" />
 </p>
 
-1. **`w_foot_slip` 关键发现**：初版 `Retarget_X v1` 开启了 `w_foot_slip = 0.5`，导致舞蹈/原地旋转动作中支撑脚被过度“钉死”，骨盆无法跟上参考位移（`egypt_dance` 退化至 `84.4 mm`）。在 `v2` 中关闭 `w_foot_slip = 0.0` 并匹配天工3踝关节阻尼比（`kp=[55, 38], kd=[3.75, 2.1]`）后，`egypt_dance` 直接降至 **`26.9 mm`**（4.8 分钟，甚至优于 19.9 分钟的 Vanilla DTMR 4096 `28.0 mm`），同时 `high_jump` 进一步降至 **`61.7 mm` (-60.9%)**。
-2. **误差分析与 v0.2 优化方向**：当前 `high` 档同时包含“腾空跳跃”和“高速弧线慢跑”，低 `w_dphi=14` 对腾空跳跃极度有利，但在非腾空的高速弯道跑（`jog_arc_cw_start`, `turn_start_jog`）上会允许轻微相位漂移。v0.2 将把 `high` 细分为 `high_aerial`（`w_dphi=12–14`）和 `high_running`（`w_dphi=18–20`）。
+1. **`w_foot_slip` 关键发现**：初版 `Retarget_X v1` 开启 `w_foot_slip = 0.5` 会导致舞蹈/旋转动作中支撑脚被“钉死”（`egypt_dance` 退化至 `84.4 mm`）。`v2` 关闭 `w_foot_slip = 0.0` 并匹配天工3踝关节阻尼比（`kp=[55, 38], kd=[3.75, 2.1]`）后，`egypt_dance` 降至 **`26.9 mm`**（4.8 分钟，优于 19.9 分钟 Vanilla DTMR 4096 的 `28.0 mm`），同时 `high_jump` 降至 **`61.7 mm` (-60.9%)**。
+2. **误差分析与下一步**：当前 `high` 档合并了“腾空跳跃”和“高速弯道慢跑”，后续可将 `high` 细分为 `high_aerial`（`w_dphi=12–14`）和 `high_running`（`w_dphi=18–20`）以进一步压低 `jog_arc_cw_start` / `turn_start_jog` 的误差。
 
 ---
 
-## Trajectory Optimization (TDOT Integration)
+## Trajectory Optimization (`TDOT`)
 
-`Retarget_X` now integrates the full [**TDOT**](https://github.com/BenHuHuan/TDOT) dynamic trajectory optimization suite verbatim (3D Three.js URDF Editor + 2D Curve Editor + preloaded GPU `NablaEngine`/`NablaMimic` daemon + MuJoCo 4.0 IEEE FP32 closed-loop verifier + unified NPZ/CSV export), accessible directly via the **`Trajectory Optimization`** button in both the web report (`docs/index.html`) and the 3D editor UI (`templates/index.html`).
+本仓库已完整合入 [**TDOT**](https://github.com/BenHuHuan/TDOT) 动态轨迹优化与 3D 编辑器套件，并在前端报告页（`docs/index.html`）与 3D 编辑器（`templates/index.html` 顶部 HUD + 右侧主操作栏）均提供了 **`Trajectory Optimization`** 按钮。
 
-### Launch TDOT 3D Editor + Trajectory Optimization Web App
+### Measured TDOT Benchmarks (Strict IEEE FP32)
 
-```bash
-# Optional first-time setup (auto-detects existing ~/NablaMimic/.venv and ~/mjlab/.venv-mj4)
-bash scripts/setup_tdot.sh
-
-# Launch 3D Editor & Trajectory Optimization Web App
-bash scripts/launch_tdot.sh --host 127.0.0.1 --port 5000 --preload-buckets 512
-```
-
-Open **http://127.0.0.1:5000**, load a motion (e.g. `weird_dance_6s.npz`), and click **`Trajectory Optimization`** in either the top HUD bar or the right-hand Dynamic TO panel.
-
-### Headless Trajectory Optimization CLI
-
-```bash
-python -m tdot.cli optimize \
-  --input static/samples/weird_dance_6s.npz \
-  --out outputs/fixed_dance.npz \
-  --csv-out outputs/fixed_dance_30hz.csv \
-  --preset standard
-```
+| Test Trajectory (Unitree G1 29-DoF) | Hardware | Opt / E2E Time | MuJoCo 4.0 Survival | Return | MPJPE |
+|---|---|---:|---:|---:|---:|
+| **6s Clean LAFAN1 Dance** (`301f`) | RTX PRO 6000 (96 GB) | **14.5 s** (`TARGET_MET`) | **100.0%** | **0.9192** | **33.8 mm** |
+| **15s Continuous LAFAN1 Dance** (`751f`) | RTX PRO 6000 (96 GB) | **46.8 s** | **100.0%** | **0.8941** | **33.9 mm** |
+| **6s Corrupted "Weird" Dance** (+18cm float, jitter) | RTX PRO 6000 (96 GB) | **15.1 s** | **100.0%** | **0.6401** | 115 mm* |
+| **6s Clean Dance (`warm_start=True`)** | RTX 4080 Laptop (Preloaded) | **10.53 s** (0.0s compile) | **100.0%** | **0.8929** | **32.5 mm** |
 
 ---
 
 ## Quick Start
 
-### Installation
+### 1. Installation
 
 ```bash
 git clone https://github.com/BenHuHuan/Retarget_X.git
 cd Retarget_X
+
+# Core Retarget_X (Stage 1/2/4)
 pip install -e .
 
-# Stage 3 GPU physics MPC (requires NVIDIA GPU + CUDA 12)
+# Optional: Stage 3 DTMR GPU MPC (NVIDIA GPU + CUDA 12)
 pip install -e ".[dtmr]"
+
+# Optional: TDOT Web App & Dynamic Trajectory Optimization
+pip install -e ".[tdot]"
+bash scripts/setup_tdot.sh   # Auto-detects existing ~/NablaMimic/.venv and ~/mjlab/.venv-mj4
 ```
 
-### CLI Usage
+### 2. Kinodynamic Retargeting (`retarget-x` CLI)
 
 ```bash
 # Stage 2 kinodynamic conditioning + difficulty profiling only (CPU, <1s)
@@ -157,11 +157,26 @@ retarget-x --robot tiangong3 --input-npz clip_hht_50Hz.npz --out-dir output/clip
 retarget-x --robot tiangong3 --input-npz clip_hht_50Hz.npz --out-dir output/clip
 ```
 
-### Reproducing Benchmarks & Charts
+### 3. Trajectory Optimization 3D Web App & CLI (`tdot`)
 
 ```bash
-# Run head-to-head ablation
-python scripts/run_benchmark_ablation.py --ref-dir path/to/hht_refs --out-dir output/ablation --robot tiangong3
+# Launch 3D URDF Editor + Preloaded Dynamic Trajectory Optimization Web App
+bash scripts/launch_tdot.sh --host 127.0.0.1 --port 5000 --preload-buckets 512
+# Open http://127.0.0.1:5000 -> Load a clip -> Click "Trajectory Optimization"
+
+# Headless CLI Trajectory Optimization
+python -m tdot.cli optimize \
+  --input static/samples/weird_dance_6s.npz \
+  --out outputs/fixed_dance.npz \
+  --csv-out outputs/fixed_dance_30hz.csv \
+  --preset standard
+```
+
+### 4. Reproducing Benchmarks, Charts & Tests
+
+```bash
+# Run full unit + Flask + MuJoCo 4.0 test suite
+pytest -v tests/test_conditioning_and_audit.py tests/test_tdot.py
 
 # Regenerate comparison table, dark-theme charts, and interactive HTML report
 python scripts/analyze_results.py \
@@ -179,22 +194,30 @@ python scripts/build_report_page.py
 
 ```text
 Retarget_X/
-├── assets/tiangong3/                  # MuJoCo Warp 29-DOF headless collision model (0.02mm sole accuracy)
-├── configs/robots/tiangong3.yaml      # Unified robot spec, PD gains, conditioning & adaptive MPC recipes
-├── src/retarget_x/
-│   ├── stage1_kinematic.py            # Enhanced hhtools (source_plane scaling + multi-pose calibration)
-│   ├── stage2_conditioning.py         # Zero-phase filter + contact-aware ground projection + dynamism profiler
-│   ├── stage3_physics_mpc.py          # Difficulty-adaptive DTMR (MuJoCo Warp MPPI)
-│   ├── stage4_audit_export.py         # Dual kinematic/dynamic audit + unified 50 Hz RL/Sim NPZ exporter
-│   ├── pipeline.py & cli.py           # End-to-end orchestrator & `retarget-x` CLI
+├── assets/tiangong3/                       # MuJoCo Warp 29-DOF headless collision model (0.02mm sole accuracy)
+├── configs/robots/tiangong3.yaml           # Unified Tiangong3 spec, PD gains, conditioning & adaptive MPC recipes
+├── src/retarget_x/                         # Retarget_X 4-stage kinodynamic retargeting package (`retarget-x`)
+│   ├── stage1_kinematic.py                 # Enhanced hhtools (source_plane scaling + multi-pose calibration)
+│   ├── stage2_conditioning.py              # Zero-phase filter + contact-aware ground projection + dynamism profiler
+│   ├── stage3_physics_mpc.py               # Difficulty-adaptive DTMR (MuJoCo Warp MPPI)
+│   ├── stage4_audit_export.py              # Dual kinematic/dynamic audit + unified 50 Hz RL/Sim NPZ exporter
+│   └── pipeline.py & cli.py                # End-to-end orchestrator & CLI
+├── tdot/                                   # Verbatim TDOT Dynamic Trajectory Optimization engine (`tdot`)
+│   ├── convergence.py & progress.py        # Adaptive early-stopping & monotonic physics progress estimator
+│   ├── io_bridge.py                        # Universal G1 parser, sanitizer, unified NPZ & 30 Hz CSV export
+│   ├── nabla_daemon.py & verifier_pool.py  # Persistent GPU NablaEngine daemon & ~190ms MuJoCo 4.0 FP32 verifier
+│   └── engine_manager.py, server.py, cli.py
+├── templates/index.html                    # TDOT Three.js 3D URDF Viewer + 2D Curve Editor + Trajectory Optimization UI
+├── static/                                 # Bundled Unitree G1 29-DoF URDF/STL meshes & sample `.npz` motions
 ├── docs/
-│   ├── index.html                     # Interactive dark-theme benchmark report (GitHub Pages ready)
-│   └── assets/*.png                   # High-DPI benchmark & ablation charts
-├── benchmark/tiangong3_bones_seed_nonhoi/  # Full raw JSON results (120 hhtools / 18 DTMR / 8 Retarget_X)
-├── scripts/                           # Ablation runner, analyzer, chart & HTML report generators
-└── tests/                             # Unit tests for Stage 2 conditioning and Stage 4 audit
+│   ├── index.html                          # Interactive dark-theme benchmark report + Trajectory Optimization hub
+│   └── assets/*.png                        # High-DPI benchmark & ablation charts
+├── benchmark/tiangong3_bones_seed_nonhoi/  # Raw benchmark JSONs (120 hhtools / 18 DTMR / 8 Retarget_X)
+├── scripts/                                # Ablation, chart/HTML builders, `setup_tdot.sh` & `launch_tdot.sh`
+├── tests/                                  # `test_conditioning_and_audit.py` & `test_tdot.py`
+└── THIRD_PARTY_NOTICES.md                  # Upstream attributions for TDOT & bundled assets
 ```
 
 ## License & Credits
 
-Apache-2.0. Built upon and inspired by [human-humanoid-tools (hhtools)](https://github.com/Roboparty/human-humanoid-tools) and [DTMR](https://github.com/nicolejrkim/DTMR). Benchmark clips derived from **Motion Data by Bones Studio (https://bones.studio/)**.
+Licensed under **Apache-2.0**. Built upon and integrating [human-humanoid-tools (hhtools)](https://github.com/Roboparty/human-humanoid-tools), [DTMR](https://github.com/nicolejrkim/DTMR), and [TDOT](https://github.com/BenHuHuan/TDOT). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for full upstream attributions. Benchmark clips derived from **Motion Data by Bones Studio (https://bones.studio/)**.
