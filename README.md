@@ -54,6 +54,7 @@ flowchart LR
    - **Stage 2 ([`stage2_conditioning.py`](src/retarget_x/stage2_conditioning.py))**：零相位 Savitzky-Golay 滤波（关节加速度 P95 降 **12%–37%**）+ 接触感知脚底胶囊体地面投影（穿地 P95 `25.0 mm → 0.00 mm` 且保留腾空相位）+ 动力学难度画像（`low / medium / high`）。
    - **Stage 3 ([`stage3_physics_mpc.py`](src/retarget_x/stage3_physics_mpc.py))**：难度自适应 MuJoCo Warp MPPI（自动分配 `Nsample / Hsample / Hnode / w_dphi` + 匹配阻尼比的踝关节增益，速度提升 **~4.8×**）。
    - **Stage 4 ([`stage4_audit_export.py`](src/retarget_x/stage4_audit_export.py))**：双维度运动学/动力学审计并导出标准 50 Hz RL/Sim `.npz`。
+   - **Tiangong3 CAD-Calibrated Collision (`tiangong3_capsule_v1`, [`tiangong3_capsule_collision.py`](src/retarget_x/tiangong3_capsule_collision.py))**：完整对齐 [**MLAB4_Fast**](https://github.com/BenHuHuan/MLAB4_Fast) 的 39 原语零网格（`nmesh=0`）解析胶囊/球体碰撞体——每只脚 4 根 `r=10 mm` 变宽胶囊精确拟合天工3 CAD `1.35°` 跟趾弧度（120 条 BONES-SEED 全量采样帧较旧版 19 几何体平脚底误差 MAE 从 `2.993 mm → 0.724 mm`、P50 从 `1.769 mm → 0.195 mm`，全身地面间隙 MAE 从 `3.259 mm → 0.536 mm`），并补齐骨盆/胸腔/髋大转子/前凸膝盖/肩肘腕/手端 TCP（`z_min=-0.1046 m`）全链胶囊与 20 对复合关节自碰撞排除，同时保持 MuJoCo Warp 纯闭式 `O(1)` `_primitive_narrowphase` 零网格开销。
 2. **Dynamic Trajectory Optimization & 3D Editor (`tdot/`, `templates/`, `static/`)** — 完整原封合入 [**TDOT**](https://github.com/BenHuHuan/TDOT)：
    - 预加载 GPU `NablaEngine` + `NablaMimic` + `SuperMimic-lite` 守护进程，热启动后单条 6s 动作端到端仅需 **10.53 s**（RTX 4080 Laptop）。
    - ~190 ms `MuJoCo 4.0` 严格 IEEE FP32 闭环验证，实时 SSE 物理进度条（`BALANCE → REFINE → VERIFY`）与优化前后 3D / 2D 橙色虚线对比。
@@ -175,8 +176,11 @@ python -m tdot.cli optimize \
 ### 4. Reproducing Benchmarks, Charts & Tests
 
 ```bash
-# Run full unit + Flask + MuJoCo 4.0 test suite
-pytest -v tests/test_conditioning_and_audit.py tests/test_tdot.py
+# Run full unit + Tiangong3 capsule parity + Flask + MuJoCo 4.0 test suite
+pytest -v tests/test_conditioning_and_audit.py tests/test_tiangong3_capsule_collision.py tests/test_tdot.py
+
+# Regenerate & audit Tiangong3 MLAB4_Fast tiangong3_capsule_v1 XMLs (optionally syncing DTMR)
+python scripts/sync_tiangong3_capsule_collision.py
 
 # Regenerate comparison table, dark-theme charts, and interactive HTML report
 python scripts/analyze_results.py \
@@ -194,9 +198,10 @@ python scripts/build_report_page.py
 
 ```text
 Retarget_X/
-├── assets/tiangong3/                       # MuJoCo Warp 29-DOF headless collision model (0.02mm sole accuracy)
+├── assets/tiangong3/                       # MuJoCo Warp 29-DOF headless collision model (MLAB4_Fast tiangong3_capsule_v1, 39 primitives, nmesh=0)
 ├── configs/robots/tiangong3.yaml           # Unified Tiangong3 spec, PD gains, conditioning & adaptive MPC recipes
 ├── src/retarget_x/                         # Retarget_X 4-stage kinodynamic retargeting package (`retarget-x`)
+│   ├── tiangong3_capsule_collision.py      # MLAB4_Fast tiangong3_capsule_v1 (39 CAD-calibrated capsules/spheres + explicit pairs)
 │   ├── stage1_kinematic.py                 # Enhanced hhtools (source_plane scaling + multi-pose calibration)
 │   ├── stage2_conditioning.py              # Zero-phase filter + contact-aware ground projection + dynamism profiler
 │   ├── stage3_physics_mpc.py               # Difficulty-adaptive DTMR (MuJoCo Warp MPPI)

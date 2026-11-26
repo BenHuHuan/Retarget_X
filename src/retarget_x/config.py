@@ -25,6 +25,7 @@ class RobotSpec:
     foot_collision_geoms: tuple[str, ...]
     conditioning: dict[str, Any]
     mpc_profiles: dict[str, dict[str, Any]]
+    collision_profile: str = "default"
 
     @property
     def height_ratio_vs_g1(self) -> float:
@@ -58,4 +59,5 @@ def load_robot_spec(name_or_path: str | Path) -> RobotSpec:
         foot_collision_geoms=tuple(raw["foot_collision_geoms"]),
         conditioning=dict(raw.get("conditioning", {})),
         mpc_profiles=dict(raw.get("mpc_profiles", {})),
+        collision_profile=str(raw["model"].get("collision_profile", "default")),
     )

@@ -1,4 +1,4 @@
-<mujoco model="tiangong3 flat terrain scene torque">
+<mujoco model="tiangong3 flat terrain scene torque (tiangong3_capsule_v1)">
   <include file="tiangong3_mjx_torque_headless.xml"/>
 
   <default>
@@ -29,44 +29,108 @@
   </worldbody>
 
   <contact>
-    <pair name="left_foot1_collision__floor" geom1="left_foot1_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
-    <pair name="left_foot2_collision__floor" geom1="left_foot2_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
-    <pair name="left_foot3_collision__floor" geom1="left_foot3_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
-    <pair name="right_foot1_collision__floor" geom1="right_foot1_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
-    <pair name="right_foot2_collision__floor" geom1="right_foot2_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
-    <pair name="right_foot3_collision__floor" geom1="right_foot3_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
-    <pair name="pelvis_collision__floor" geom1="pelvis_collision" geom2="floor" condim="3"/>
-    <pair name="torso_collision__floor" geom1="torso_collision" geom2="floor" condim="3"/>
-    <pair name="head_collision__floor" geom1="head_collision" geom2="floor" condim="3"/>
-    <pair name="left_thigh_collision__floor" geom1="left_thigh_collision" geom2="floor" condim="3"/>
-    <pair name="right_thigh_collision__floor" geom1="right_thigh_collision" geom2="floor" condim="3"/>
-    <pair name="left_shin_collision__floor" geom1="left_shin_collision" geom2="floor" condim="3"/>
-    <pair name="right_shin_collision__floor" geom1="right_shin_collision" geom2="floor" condim="3"/>
-    <pair name="left_hand_collision__floor" geom1="left_hand_collision" geom2="floor" condim="3"/>
-    <pair name="right_hand_collision__floor" geom1="right_hand_collision" geom2="floor" condim="3"/>
-    <pair name="left_forearm_collision__floor" geom1="left_forearm_collision" geom2="floor" condim="3"/>
-    <pair name="right_forearm_collision__floor" geom1="right_forearm_collision" geom2="floor" condim="3"/>
-    <pair name="left_upper_arm_collision__floor" geom1="left_upper_arm_collision" geom2="floor" condim="3"/>
-    <pair name="right_upper_arm_collision__floor" geom1="right_upper_arm_collision" geom2="floor" condim="3"/>
-    <pair name="left_foot2_collision__right_foot2_collision" geom1="left_foot2_collision" geom2="right_foot2_collision" condim="1"/>
-    <pair name="left_foot2_collision__right_shin_collision" geom1="left_foot2_collision" geom2="right_shin_collision" condim="1"/>
-    <pair name="right_foot2_collision__left_shin_collision" geom1="right_foot2_collision" geom2="left_shin_collision" condim="1"/>
-    <pair name="left_shin_collision__right_shin_collision" geom1="left_shin_collision" geom2="right_shin_collision" condim="1"/>
-    <pair name="left_shin_collision__right_thigh_collision" geom1="left_shin_collision" geom2="right_thigh_collision" condim="1"/>
-    <pair name="right_shin_collision__left_thigh_collision" geom1="right_shin_collision" geom2="left_thigh_collision" condim="1"/>
-    <pair name="left_thigh_collision__right_thigh_collision" geom1="left_thigh_collision" geom2="right_thigh_collision" condim="1"/>
-    <pair name="left_hand_collision__left_thigh_collision" geom1="left_hand_collision" geom2="left_thigh_collision" condim="1"/>
-    <pair name="right_hand_collision__right_thigh_collision" geom1="right_hand_collision" geom2="right_thigh_collision" condim="1"/>
-    <pair name="torso_collision__left_upper_arm_collision" geom1="torso_collision" geom2="left_upper_arm_collision" condim="1"/>
-    <pair name="torso_collision__right_upper_arm_collision" geom1="torso_collision" geom2="right_upper_arm_collision" condim="1"/>
-    <pair name="torso_collision__left_forearm_collision" geom1="torso_collision" geom2="left_forearm_collision" condim="1"/>
-    <pair name="torso_collision__right_forearm_collision" geom1="torso_collision" geom2="right_forearm_collision" condim="1"/>
-    <pair name="torso_collision__left_hand_collision" geom1="torso_collision" geom2="left_hand_collision" condim="1"/>
-    <pair name="torso_collision__right_hand_collision" geom1="torso_collision" geom2="right_hand_collision" condim="1"/>
-    <pair name="left_forearm_collision__right_forearm_collision" geom1="left_forearm_collision" geom2="right_forearm_collision" condim="1"/>
-    <pair name="left_hand_collision__right_hand_collision" geom1="left_hand_collision" geom2="right_hand_collision" condim="1"/>
-    <pair name="left_hand_collision__right_forearm_collision" geom1="left_hand_collision" geom2="right_forearm_collision" condim="1"/>
-    <pair name="right_hand_collision__left_forearm_collision" geom1="right_hand_collision" geom2="left_forearm_collision" condim="1"/>
+    <pair name="foot_l_1_collision__floor" geom1="foot_l_1_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="foot_l_2_collision__floor" geom1="foot_l_2_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="foot_l_3_collision__floor" geom1="foot_l_3_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="foot_l_4_collision__floor" geom1="foot_l_4_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="foot_r_1_collision__floor" geom1="foot_r_1_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="foot_r_2_collision__floor" geom1="foot_r_2_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="foot_r_3_collision__floor" geom1="foot_r_3_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="foot_r_4_collision__floor" geom1="foot_r_4_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="left_tcp_link_collision__floor" geom1="left_tcp_link_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="right_tcp_link_collision__floor" geom1="right_tcp_link_collision" geom2="floor" condim="3" solref="0.005 1" friction="1 1"/>
+    <pair name="pelvis_l_collision__floor" geom1="pelvis_l_collision" geom2="floor" condim="3"/>
+    <pair name="pelvis_r_collision__floor" geom1="pelvis_r_collision" geom2="floor" condim="3"/>
+    <pair name="pelvis_lower_collision__floor" geom1="pelvis_lower_collision" geom2="floor" condim="3"/>
+    <pair name="torso_lower_collision__floor" geom1="torso_lower_collision" geom2="floor" condim="3"/>
+    <pair name="torso_upper_collision__floor" geom1="torso_upper_collision" geom2="floor" condim="3"/>
+    <pair name="head_crown_collision__floor" geom1="head_crown_collision" geom2="floor" condim="3"/>
+    <pair name="head_yaw_link_collision__floor" geom1="head_yaw_link_collision" geom2="floor" condim="3"/>
+    <pair name="hip_pitch_l_link_collision__floor" geom1="hip_pitch_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="hip_roll_l_link_collision__floor" geom1="hip_roll_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="hip_yaw_l_link_collision__floor" geom1="hip_yaw_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="thigh_distal_l_collision__floor" geom1="thigh_distal_l_collision" geom2="floor" condim="3"/>
+    <pair name="knee_cap_l_collision__floor" geom1="knee_cap_l_collision" geom2="floor" condim="3"/>
+    <pair name="shin_lower_l_collision__floor" geom1="shin_lower_l_collision" geom2="floor" condim="3"/>
+    <pair name="shoulder_roll_l_link_collision__floor" geom1="shoulder_roll_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="shoulder_yaw_l_link_collision__floor" geom1="shoulder_yaw_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="elbow_pitch_l_link_collision__floor" geom1="elbow_pitch_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="elbow_yaw_l_link_collision__floor" geom1="elbow_yaw_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="wrist_pitch_l_link_collision__floor" geom1="wrist_pitch_l_link_collision" geom2="floor" condim="3"/>
+    <pair name="hip_pitch_r_link_collision__floor" geom1="hip_pitch_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="hip_roll_r_link_collision__floor" geom1="hip_roll_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="hip_yaw_r_link_collision__floor" geom1="hip_yaw_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="thigh_distal_r_collision__floor" geom1="thigh_distal_r_collision" geom2="floor" condim="3"/>
+    <pair name="knee_cap_r_collision__floor" geom1="knee_cap_r_collision" geom2="floor" condim="3"/>
+    <pair name="shin_lower_r_collision__floor" geom1="shin_lower_r_collision" geom2="floor" condim="3"/>
+    <pair name="shoulder_roll_r_link_collision__floor" geom1="shoulder_roll_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="shoulder_yaw_r_link_collision__floor" geom1="shoulder_yaw_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="elbow_pitch_r_link_collision__floor" geom1="elbow_pitch_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="elbow_yaw_r_link_collision__floor" geom1="elbow_yaw_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="wrist_pitch_r_link_collision__floor" geom1="wrist_pitch_r_link_collision" geom2="floor" condim="3"/>
+    <pair name="foot_l_1_collision__foot_r_2_collision" geom1="foot_l_1_collision" geom2="foot_r_2_collision" condim="1"/>
+    <pair name="foot_l_1_collision__foot_r_4_collision" geom1="foot_l_1_collision" geom2="foot_r_4_collision" condim="1"/>
+    <pair name="foot_l_3_collision__foot_r_2_collision" geom1="foot_l_3_collision" geom2="foot_r_2_collision" condim="1"/>
+    <pair name="foot_l_3_collision__foot_r_4_collision" geom1="foot_l_3_collision" geom2="foot_r_4_collision" condim="1"/>
+    <pair name="foot_l_2_collision__foot_r_1_collision" geom1="foot_l_2_collision" geom2="foot_r_1_collision" condim="1"/>
+    <pair name="foot_l_4_collision__foot_r_3_collision" geom1="foot_l_4_collision" geom2="foot_r_3_collision" condim="1"/>
+    <pair name="foot_l_1_collision__shin_lower_r_collision" geom1="foot_l_1_collision" geom2="shin_lower_r_collision" condim="1"/>
+    <pair name="foot_l_3_collision__shin_lower_r_collision" geom1="foot_l_3_collision" geom2="shin_lower_r_collision" condim="1"/>
+    <pair name="foot_r_2_collision__shin_lower_l_collision" geom1="foot_r_2_collision" geom2="shin_lower_l_collision" condim="1"/>
+    <pair name="foot_r_4_collision__shin_lower_l_collision" geom1="foot_r_4_collision" geom2="shin_lower_l_collision" condim="1"/>
+    <pair name="shin_lower_l_collision__shin_lower_r_collision" geom1="shin_lower_l_collision" geom2="shin_lower_r_collision" condim="1"/>
+    <pair name="knee_cap_l_collision__knee_cap_r_collision" geom1="knee_cap_l_collision" geom2="knee_cap_r_collision" condim="1"/>
+    <pair name="knee_cap_l_collision__shin_lower_r_collision" geom1="knee_cap_l_collision" geom2="shin_lower_r_collision" condim="1"/>
+    <pair name="knee_cap_r_collision__shin_lower_l_collision" geom1="knee_cap_r_collision" geom2="shin_lower_l_collision" condim="1"/>
+    <pair name="shin_lower_l_collision__thigh_distal_r_collision" geom1="shin_lower_l_collision" geom2="thigh_distal_r_collision" condim="1"/>
+    <pair name="shin_lower_r_collision__thigh_distal_l_collision" geom1="shin_lower_r_collision" geom2="thigh_distal_l_collision" condim="1"/>
+    <pair name="knee_cap_l_collision__thigh_distal_r_collision" geom1="knee_cap_l_collision" geom2="thigh_distal_r_collision" condim="1"/>
+    <pair name="knee_cap_r_collision__thigh_distal_l_collision" geom1="knee_cap_r_collision" geom2="thigh_distal_l_collision" condim="1"/>
+    <pair name="knee_cap_l_collision__hip_yaw_r_link_collision" geom1="knee_cap_l_collision" geom2="hip_yaw_r_link_collision" condim="1"/>
+    <pair name="knee_cap_r_collision__hip_yaw_l_link_collision" geom1="knee_cap_r_collision" geom2="hip_yaw_l_link_collision" condim="1"/>
+    <pair name="hip_yaw_l_link_collision__hip_yaw_r_link_collision" geom1="hip_yaw_l_link_collision" geom2="hip_yaw_r_link_collision" condim="1"/>
+    <pair name="thigh_distal_l_collision__thigh_distal_r_collision" geom1="thigh_distal_l_collision" geom2="thigh_distal_r_collision" condim="1"/>
+    <pair name="hip_yaw_l_link_collision__thigh_distal_r_collision" geom1="hip_yaw_l_link_collision" geom2="thigh_distal_r_collision" condim="1"/>
+    <pair name="hip_yaw_r_link_collision__thigh_distal_l_collision" geom1="hip_yaw_r_link_collision" geom2="thigh_distal_l_collision" condim="1"/>
+    <pair name="torso_upper_collision__shoulder_yaw_l_link_collision" geom1="torso_upper_collision" geom2="shoulder_yaw_l_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__shoulder_yaw_r_link_collision" geom1="torso_upper_collision" geom2="shoulder_yaw_r_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__elbow_pitch_l_link_collision" geom1="torso_upper_collision" geom2="elbow_pitch_l_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__elbow_pitch_r_link_collision" geom1="torso_upper_collision" geom2="elbow_pitch_r_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__elbow_yaw_l_link_collision" geom1="torso_upper_collision" geom2="elbow_yaw_l_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__elbow_yaw_r_link_collision" geom1="torso_upper_collision" geom2="elbow_yaw_r_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__wrist_pitch_l_link_collision" geom1="torso_upper_collision" geom2="wrist_pitch_l_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__wrist_pitch_r_link_collision" geom1="torso_upper_collision" geom2="wrist_pitch_r_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__left_tcp_link_collision" geom1="torso_upper_collision" geom2="left_tcp_link_collision" condim="1"/>
+    <pair name="torso_upper_collision__right_tcp_link_collision" geom1="torso_upper_collision" geom2="right_tcp_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__elbow_pitch_l_link_collision" geom1="torso_lower_collision" geom2="elbow_pitch_l_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__elbow_pitch_r_link_collision" geom1="torso_lower_collision" geom2="elbow_pitch_r_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__elbow_yaw_l_link_collision" geom1="torso_lower_collision" geom2="elbow_yaw_l_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__elbow_yaw_r_link_collision" geom1="torso_lower_collision" geom2="elbow_yaw_r_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__wrist_pitch_l_link_collision" geom1="torso_lower_collision" geom2="wrist_pitch_l_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__wrist_pitch_r_link_collision" geom1="torso_lower_collision" geom2="wrist_pitch_r_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__left_tcp_link_collision" geom1="torso_lower_collision" geom2="left_tcp_link_collision" condim="1"/>
+    <pair name="torso_lower_collision__right_tcp_link_collision" geom1="torso_lower_collision" geom2="right_tcp_link_collision" condim="1"/>
+    <pair name="pelvis_l_collision__elbow_yaw_l_link_collision" geom1="pelvis_l_collision" geom2="elbow_yaw_l_link_collision" condim="1"/>
+    <pair name="pelvis_r_collision__elbow_yaw_r_link_collision" geom1="pelvis_r_collision" geom2="elbow_yaw_r_link_collision" condim="1"/>
+    <pair name="pelvis_l_collision__wrist_pitch_l_link_collision" geom1="pelvis_l_collision" geom2="wrist_pitch_l_link_collision" condim="1"/>
+    <pair name="pelvis_r_collision__wrist_pitch_r_link_collision" geom1="pelvis_r_collision" geom2="wrist_pitch_r_link_collision" condim="1"/>
+    <pair name="pelvis_l_collision__left_tcp_link_collision" geom1="pelvis_l_collision" geom2="left_tcp_link_collision" condim="1"/>
+    <pair name="pelvis_r_collision__right_tcp_link_collision" geom1="pelvis_r_collision" geom2="right_tcp_link_collision" condim="1"/>
+    <pair name="head_yaw_link_collision__left_tcp_link_collision" geom1="head_yaw_link_collision" geom2="left_tcp_link_collision" condim="1"/>
+    <pair name="head_yaw_link_collision__right_tcp_link_collision" geom1="head_yaw_link_collision" geom2="right_tcp_link_collision" condim="1"/>
+    <pair name="left_tcp_link_collision__hip_yaw_l_link_collision" geom1="left_tcp_link_collision" geom2="hip_yaw_l_link_collision" condim="1"/>
+    <pair name="right_tcp_link_collision__hip_yaw_r_link_collision" geom1="right_tcp_link_collision" geom2="hip_yaw_r_link_collision" condim="1"/>
+    <pair name="left_tcp_link_collision__thigh_distal_l_collision" geom1="left_tcp_link_collision" geom2="thigh_distal_l_collision" condim="1"/>
+    <pair name="right_tcp_link_collision__thigh_distal_r_collision" geom1="right_tcp_link_collision" geom2="thigh_distal_r_collision" condim="1"/>
+    <pair name="wrist_pitch_l_link_collision__hip_yaw_l_link_collision" geom1="wrist_pitch_l_link_collision" geom2="hip_yaw_l_link_collision" condim="1"/>
+    <pair name="wrist_pitch_r_link_collision__hip_yaw_r_link_collision" geom1="wrist_pitch_r_link_collision" geom2="hip_yaw_r_link_collision" condim="1"/>
+    <pair name="left_tcp_link_collision__right_tcp_link_collision" geom1="left_tcp_link_collision" geom2="right_tcp_link_collision" condim="1"/>
+    <pair name="left_tcp_link_collision__wrist_pitch_r_link_collision" geom1="left_tcp_link_collision" geom2="wrist_pitch_r_link_collision" condim="1"/>
+    <pair name="right_tcp_link_collision__wrist_pitch_l_link_collision" geom1="right_tcp_link_collision" geom2="wrist_pitch_l_link_collision" condim="1"/>
+    <pair name="left_tcp_link_collision__elbow_yaw_r_link_collision" geom1="left_tcp_link_collision" geom2="elbow_yaw_r_link_collision" condim="1"/>
+    <pair name="right_tcp_link_collision__elbow_yaw_l_link_collision" geom1="right_tcp_link_collision" geom2="elbow_yaw_l_link_collision" condim="1"/>
+    <pair name="wrist_pitch_l_link_collision__wrist_pitch_r_link_collision" geom1="wrist_pitch_l_link_collision" geom2="wrist_pitch_r_link_collision" condim="1"/>
+    <pair name="elbow_yaw_l_link_collision__elbow_yaw_r_link_collision" geom1="elbow_yaw_l_link_collision" geom2="elbow_yaw_r_link_collision" condim="1"/>
   </contact>
 
   <keyframe>

@@ -3,9 +3,12 @@
   <compiler angle="radian" />
   <default>
     <default class="collision">
-      <geom group="3" rgba=".2 .6 .2 .3" type="capsule" condim="1" contype="0" conaffinity="0" solimp="0.99 0.999 0.001 0.5 2" solref="0.005 1" />
+      <geom group="3" rgba=".2 .6 .2 .3" type="capsule" condim="1" contype="0" conaffinity="0" friction="1 0.01 0.01" solimp="0.99 0.999 0.001 0.5 2" solref="0.005 1" />
       <default class="foot_capsule">
-        <geom size="0.015" />
+        <geom size="0.01" condim="3" />
+      </default>
+      <default class="hand_capsule">
+        <geom condim="3" />
       </default>
     </default>
   </default>
@@ -34,16 +37,21 @@
                 <body name="ankle_roll_l_link">
                   <inertial pos="0.025067 2e-06 -0.033303" quat="0 0.724221 0 0.689568" mass="0.826437" diaginertia="0.00479986 0.004499 0.000692141" />
                   <joint name="ankle_roll_l_joint" pos="0 0 0" axis="1 0 0" range="-0.523599 0.523599" actuatorfrcrange="-55 55" armature="0.032" damping="1.0" frictionloss="0.1" actuatorfrclimited="true" />
-                  <geom name="left_foot1_collision" class="foot_capsule" fromto="-0.084 -0.041 -0.0418 0.163 -0.041 -0.0418" />
-                  <geom name="left_foot2_collision" class="foot_capsule" fromto="-0.084  0.000 -0.0418 0.163  0.000 -0.0418" />
-                  <geom name="left_foot3_collision" class="foot_capsule" fromto="-0.084  0.041 -0.0418 0.163  0.041 -0.0418" />
+                  <geom name="foot_l_1_collision" class="foot_capsule" fromto="-0.084 -0.0335 -0.04677 0.085 -0.0455 -0.04305" />
+                  <geom name="foot_l_2_collision" class="foot_capsule" fromto="-0.084 0.0335 -0.04677 0.085 0.0455 -0.04305" />
+                  <geom name="foot_l_3_collision" class="foot_capsule" fromto="0.085 -0.0455 -0.04305 0.1688 -0.018 -0.0405" />
+                  <geom name="foot_l_4_collision" class="foot_capsule" fromto="0.085 0.0455 -0.04305 0.1688 0.018 -0.0405" />
                 </body>
               </body>
-              <geom name="left_shin_collision" class="collision" type="capsule" size="0.052" fromto="0.01 0 -0.06 0.01 0 -0.35" />
+              <geom name="knee_cap_l_collision" class="collision" type="capsule" size="0.054" fromto="0.017 0 -0.015 0.016 0 -0.175" />
+              <geom name="shin_lower_l_collision" class="collision" type="capsule" size="0.038" fromto="0.011 0 -0.195 0.007 0 -0.355" />
             </body>
-            <geom name="left_thigh_collision" class="collision" type="capsule" size="0.068" fromto="0 0 -0.07 0 0 -0.27" />
+            <geom name="hip_yaw_l_link_collision" class="collision" type="capsule" size="0.066" fromto="0.001 -0.006 -0.06 0.001 -0.006 -0.205" />
+            <geom name="thigh_distal_l_collision" class="collision" type="capsule" size="0.051" fromto="-0.002 0 -0.22 -0.006 0 -0.292" />
           </body>
+          <geom name="hip_roll_l_link_collision" class="collision" type="capsule" size="0.058" fromto="0.001 0 0.002 0.001 0 -0.03" />
         </body>
+        <geom name="hip_pitch_l_link_collision" class="collision" type="capsule" size="0.049" fromto="-0.001 0.052 -0.042 0.002 0.09 -0.024" />
       </body>
       <body name="hip_pitch_r_link" pos="0.00010305 -0.076815 -0.11847" quat="0.996195 0.0871543 5.84587e-05 0.000668198">
         <inertial pos="0.009137 -0.070235 -0.024662" quat="0.523458 0.851211 0.0159411 0.0343211" mass="2.4276" diaginertia="0.00525919 0.00404431 0.0036465" />
@@ -63,16 +71,21 @@
                 <body name="ankle_roll_r_link">
                   <inertial pos="0.025067 -2e-06 -0.033303" quat="0 0.724221 0 0.689568" mass="0.826437" diaginertia="0.00479986 0.004499 0.000692141" />
                   <joint name="ankle_roll_r_joint" pos="0 0 0" axis="1 0 0" range="-0.523599 0.523599" actuatorfrcrange="-55 55" armature="0.032" damping="1.0" frictionloss="0.1" actuatorfrclimited="true" />
-                  <geom name="right_foot1_collision" class="foot_capsule" fromto="-0.084 -0.041 -0.0418 0.163 -0.041 -0.0418" />
-                  <geom name="right_foot2_collision" class="foot_capsule" fromto="-0.084  0.000 -0.0418 0.163  0.000 -0.0418" />
-                  <geom name="right_foot3_collision" class="foot_capsule" fromto="-0.084  0.041 -0.0418 0.163  0.041 -0.0418" />
+                  <geom name="foot_r_1_collision" class="foot_capsule" fromto="-0.084 -0.0335 -0.04677 0.085 -0.0455 -0.04305" />
+                  <geom name="foot_r_2_collision" class="foot_capsule" fromto="-0.084 0.0335 -0.04677 0.085 0.0455 -0.04305" />
+                  <geom name="foot_r_3_collision" class="foot_capsule" fromto="0.085 -0.0455 -0.04305 0.1688 -0.018 -0.0405" />
+                  <geom name="foot_r_4_collision" class="foot_capsule" fromto="0.085 0.0455 -0.04305 0.1688 0.018 -0.0405" />
                 </body>
               </body>
-              <geom name="right_shin_collision" class="collision" type="capsule" size="0.052" fromto="0.01 0 -0.06 0.01 0 -0.35" />
+              <geom name="knee_cap_r_collision" class="collision" type="capsule" size="0.054" fromto="0.017 0 -0.015 0.016 0 -0.175" />
+              <geom name="shin_lower_r_collision" class="collision" type="capsule" size="0.038" fromto="0.011 0 -0.195 0.007 0 -0.355" />
             </body>
-            <geom name="right_thigh_collision" class="collision" type="capsule" size="0.068" fromto="0 0 -0.07 0 0 -0.27" />
+            <geom name="hip_yaw_r_link_collision" class="collision" type="capsule" size="0.066" fromto="0.001 0.006 -0.06 0.001 0.006 -0.205" />
+            <geom name="thigh_distal_r_collision" class="collision" type="capsule" size="0.051" fromto="-0.002 0 -0.22 -0.006 0 -0.292" />
           </body>
+          <geom name="hip_roll_r_link_collision" class="collision" type="capsule" size="0.058" fromto="0.001 0 0.002 0.001 0 -0.03" />
         </body>
+        <geom name="hip_pitch_r_link_collision" class="collision" type="capsule" size="0.049" fromto="-0.001 -0.052 -0.042 0.002 -0.09 -0.024" />
       </body>
       <body name="imu_waist_link" pos="-0.081641 -0.00010952 -0.063057" quat="-2.59903e-06 -0.707565 0.706648 2.59566e-06">
         <inertial pos="0.001734 0.001046 -0.009253" mass="0.008" diaginertia="1e-06 1e-06 1e-06" />
@@ -103,7 +116,7 @@
                   <inertial pos="0.010986 -0.000307 -0.016475" quat="0.5 0.5 0.5 0.5" mass="0.1" diaginertia="8e-05 7.7e-05 1.6e-05" />
                 </body>
               </body>
-              <geom name="head_collision" class="collision" type="sphere" pos="0 0 0.015" size="0.085" />
+              <geom name="head_yaw_link_collision" class="collision" type="sphere" size="0.085" pos="0.001 0 0.008" />
             </body>
             <body name="shoulder_pitch_l_link" pos="0 0.14552 0.18664" quat="0.999048 0.0436192 0 0">
               <inertial pos="0.004116 0.061287 -2.6e-05" quat="-0.0356677 0.705563 0.0358906 0.706838" mass="0.967698" diaginertia="0.00128 0.00103115 0.000722849" />
@@ -128,15 +141,18 @@
                           <joint name="wrist_roll_l_joint" pos="0 0 0" axis="1 0 0" range="-1.32645 1.32645" actuatorfrcrange="-40 40" armature="0.0236" damping="1.0" frictionloss="0.1" actuatorfrclimited="true" />
                           <body name="left_tcp_link" pos="0 0 -0.044">
                             <inertial pos="0.003693 -0.005984 -0.055343" quat="0.748554 -0.0753963 0.0896807 0.65264" mass="0.384094" diaginertia="0.000555335 0.000425817 0.000367849" />
-                            <geom name="left_hand_collision" class="collision" type="sphere" pos="0 0 -0.05" size="0.048" />
+                            <geom name="left_tcp_link_collision" class="hand_capsule" size="0.047" fromto="0.005 -0.006 -0.018 0.006 -0.008 -0.0576" />
                           </body>
                         </body>
+                        <geom name="wrist_pitch_l_link_collision" class="collision" type="capsule" size="0.034" fromto="0 -0.002 0 -0.001 0 -0.06" />
                       </body>
-                      <geom name="left_forearm_collision" class="collision" type="capsule" size="0.038" fromto="0 0 -0.02 0 0 -0.10" />
+                      <geom name="elbow_yaw_l_link_collision" class="collision" type="capsule" size="0.036" fromto="0 0.003 -0.015 0 0 -0.092" />
                     </body>
+                    <geom name="elbow_pitch_l_link_collision" class="collision" type="capsule" size="0.045" fromto="-0.009 -0.001 0 -0.018 0 -0.075" />
                   </body>
-                  <geom name="left_upper_arm_collision" class="collision" type="capsule" size="0.045" fromto="0.005 0 -0.04 0.005 0 -0.15" />
+                  <geom name="shoulder_yaw_l_link_collision" class="collision" type="capsule" size="0.041" fromto="0.001 0 -0.02 0.012 -0.002 -0.154" />
                 </body>
+                <geom name="shoulder_roll_l_link_collision" class="collision" type="capsule" size="0.048" fromto="-0.001 0 -0.009 -0.001 0 -0.056" />
               </body>
             </body>
             <body name="shoulder_pitch_r_link" pos="0 -0.14552 0.18664" quat="0.999048 -0.0436192 0 0">
@@ -162,24 +178,53 @@
                           <joint name="wrist_roll_r_joint" pos="0 0 0" axis="1 0 0" range="-1.32645 1.32645" actuatorfrcrange="-40 40" armature="0.0236" damping="1.0" frictionloss="0.1" actuatorfrclimited="true" />
                           <body name="right_tcp_link" pos="0 0 -0.044">
                             <inertial pos="0.003693 0.005984 -0.055343" quat="0.65264 0.0896807 -0.0753963 0.748554" mass="0.384094" diaginertia="0.000555335 0.000425817 0.000367849" />
-                            <geom name="right_hand_collision" class="collision" type="sphere" pos="0 0 -0.05" size="0.048" />
+                            <geom name="right_tcp_link_collision" class="hand_capsule" size="0.047" fromto="0.005 0.006 -0.018 0.006 0.008 -0.0576" />
                           </body>
                         </body>
+                        <geom name="wrist_pitch_r_link_collision" class="collision" type="capsule" size="0.034" fromto="0 0.002 0 -0.001 0 -0.06" />
                       </body>
-                      <geom name="right_forearm_collision" class="collision" type="capsule" size="0.038" fromto="0 0 -0.02 0 0 -0.10" />
+                      <geom name="elbow_yaw_r_link_collision" class="collision" type="capsule" size="0.036" fromto="0 -0.003 -0.015 0 0 -0.092" />
                     </body>
+                    <geom name="elbow_pitch_r_link_collision" class="collision" type="capsule" size="0.045" fromto="-0.009 0.001 0 -0.018 0 -0.075" />
                   </body>
-                  <geom name="right_upper_arm_collision" class="collision" type="capsule" size="0.045" fromto="0.005 0 -0.04 0.005 0 -0.15" />
+                  <geom name="shoulder_yaw_r_link_collision" class="collision" type="capsule" size="0.041" fromto="0.001 0 -0.02 0.012 0.002 -0.154" />
                 </body>
+                <geom name="shoulder_roll_r_link_collision" class="collision" type="capsule" size="0.048" fromto="-0.001 0 -0.009 -0.001 0 -0.056" />
               </body>
             </body>
-            <geom name="torso_collision" class="collision" type="capsule" size="0.115" fromto="0 0 0.08 0 0 0.36" />
+            <geom name="torso_lower_collision" class="collision" type="capsule" size="0.108" fromto="0.002 -0.055 0.105 0.002 0.055 0.105" />
+            <geom name="torso_upper_collision" class="collision" type="capsule" size="0.106" fromto="-0.001 -0.055 0.22 -0.001 0.055 0.22" />
+            <geom name="head_crown_collision" class="collision" type="sphere" size="0.064" pos="0.0002 0 0.464" />
           </body>
         </body>
       </body>
-      <geom name="pelvis_collision" class="collision" type="sphere" pos="0 0 -0.06" size="0.115" />
+      <geom name="pelvis_l_collision" class="collision" type="capsule" size="0.08" fromto="-0.028 0.045 -0.036 0.026 0.045 -0.036" />
+      <geom name="pelvis_r_collision" class="collision" type="capsule" size="0.08" fromto="-0.028 -0.045 -0.036 0.026 -0.045 -0.036" />
+      <geom name="pelvis_lower_collision" class="collision" type="capsule" size="0.074" fromto="-0.002 -0.05 -0.108 -0.002 0.05 -0.108" />
     </body>
   </worldbody>
+  <contact>
+    <exclude body1="knee_pitch_l_link" body2="ankle_roll_l_link" />
+    <exclude body1="knee_pitch_r_link" body2="ankle_roll_r_link" />
+    <exclude body1="pelvis" body2="waist_roll_link" />
+    <exclude body1="pelvis" body2="hip_roll_l_link" />
+    <exclude body1="pelvis" body2="hip_roll_r_link" />
+    <exclude body1="pelvis" body2="hip_yaw_l_link" />
+    <exclude body1="pelvis" body2="hip_yaw_r_link" />
+    <exclude body1="pelvis" body2="waist_pitch_link" />
+    <exclude body1="hip_pitch_l_link" body2="hip_yaw_l_link" />
+    <exclude body1="hip_pitch_r_link" body2="hip_yaw_r_link" />
+    <exclude body1="waist_pitch_link" body2="shoulder_roll_l_link" />
+    <exclude body1="waist_pitch_link" body2="shoulder_roll_r_link" />
+    <exclude body1="shoulder_roll_l_link" body2="elbow_pitch_l_link" />
+    <exclude body1="shoulder_roll_r_link" body2="elbow_pitch_r_link" />
+    <exclude body1="elbow_pitch_l_link" body2="wrist_pitch_l_link" />
+    <exclude body1="elbow_pitch_r_link" body2="wrist_pitch_r_link" />
+    <exclude body1="elbow_yaw_l_link" body2="left_tcp_link" />
+    <exclude body1="elbow_yaw_r_link" body2="right_tcp_link" />
+    <exclude body1="wrist_pitch_l_link" body2="left_tcp_link" />
+    <exclude body1="wrist_pitch_r_link" body2="right_tcp_link" />
+  </contact>
   <actuator>
     <motor name="hip_pitch_l_joint" joint="hip_pitch_l_joint" ctrllimited="true" ctrlrange="-235 235" />
     <motor name="hip_roll_l_joint" joint="hip_roll_l_joint" ctrllimited="true" ctrlrange="-235 235" />
