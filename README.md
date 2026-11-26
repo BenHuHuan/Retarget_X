@@ -4,15 +4,16 @@
 
 **Unified Kinodynamic Retargeting, Dense Temporal MPC & Dynamic Trajectory Optimization Suite for Humanoid Robots**
 
-*融合 `hhtools`（跨本体极速运动学重定向）· `DTMR`（MuJoCo Warp 物理时序 MPC）· `TDOT`（3D URDF 编辑器与动态轨迹优化引擎）*
+*融合 `hhtools`（跨本体极速运动学重定向）· `DTMR`（MuJoCo Warp 物理时序 MPC）· `MLAB4_Fast`（天工3 CAD 校准零网格解析碰撞体）· `TDOT`（3D URDF 编辑器与动态轨迹优化引擎）*
 
 [![Robots](https://img.shields.io/badge/Robots-Tiangong3%20(29--DOF)%20%7C%20Unitree%20G1%20(29--DOF)-0ea5e9?style=for-the-badge)](configs/robots/tiangong3.yaml)
+[![Collision](https://img.shields.io/badge/Tiangong3%20Collision-MLAB4__Fast%20capsule__v1%20(39%20prims%20%7C%200%20mesh)-14b8a6?style=for-the-badge)](#tiangong3-cad-calibrated-collision-model-mlab4_fast)
 [![Dataset](https://img.shields.io/badge/Benchmark-BONES--SEED%20Non--HOI%20(120%20Clips)-8b5cf6?style=for-the-badge)](benchmark/tiangong3_bones_seed_nonhoi/)
 [![MPJPE](https://img.shields.io/badge/MPJPE%20vs%20DTMR--15.9%25-10b981?style=for-the-badge)](#benchmark-results-on-tiangong3)
 [![TDOT](https://img.shields.io/badge/Trajectory%20Optimization-TDOT%203D%20Editor%20%2B%20MuJoCo%204.0-06b6d4?style=for-the-badge)](#trajectory-optimization-tdot)
 [![License](https://img.shields.io/badge/License-Apache--2.0-f59e0b?style=for-the-badge)](LICENSE)
 
-[**📊 Interactive Web Report (`docs/index.html`)**](docs/index.html) · [**⚡ Trajectory Optimization (`TDOT`)**](#trajectory-optimization-tdot) · [**📈 Benchmark Data**](benchmark/tiangong3_bones_seed_nonhoi/) · [**🚀 Quick Start**](#quick-start) · [**🔬 Ablation Study**](#ablation-study)
+[**📊 Interactive Web Report (`docs/index.html`)**](docs/index.html) · [**🛡️ Tiangong3 Collision (`capsule_v1`)**](#tiangong3-cad-calibrated-collision-model-mlab4_fast) · [**⚡ Trajectory Optimization (`TDOT`)**](#trajectory-optimization-tdot) · [**📈 Benchmark Data**](benchmark/tiangong3_bones_seed_nonhoi/) · [**🚀 Quick Start**](#quick-start) · [**🔬 Ablation Study**](#ablation-study)
 
 </div>
 
@@ -40,8 +41,8 @@
 ```mermaid
 flowchart LR
     A["Human / Source Motion\n(BONES-SEED Non-HOI, BVH, G1 CSV, NPZ)"] --> B["Stage 1: Enhanced Kinematic IK\n• hhtools Newton-LM IK\n• Exact sole-height ratio (1.2586)\n• Optional T90/T60/Elbow45 multi-pose"]
-    B --> C["Stage 2: Kinodynamic Conditioning\n• Zero-phase Savitzky-Golay filter\n• Joint-limit clamping\n• Contact-aware ground projection\n• Motion dynamism profiler"]
-    C --> D["Stage 3: Difficulty-Adaptive DTMR\n• MuJoCo Warp Annealed MPPI\n• low / medium / high budgets\n• Adaptive horizon & w_dphi"]
+    B --> C["Stage 2: Kinodynamic Conditioning\n• Zero-phase Savitzky-Golay filter\n• Joint-limit clamping\n• Contact-aware projection (tiangong3_capsule_v1)\n• Motion dynamism profiler"]
+    C --> D["Stage 3: Difficulty-Adaptive DTMR\n• MuJoCo Warp Annealed MPPI (nmesh=0)\n• low / medium / high budgets\n• Adaptive horizon & w_dphi"]
     C -. "Interactive Edit / Fast TO" .-> T["TDOT: Trajectory Optimization\n• 3D URDF Viewer + 2D Curve Editor\n• Preloaded NablaMimic GPU Daemon\n• MuJoCo 4.0 IEEE FP32 Verifier"]
     D --> E["Stage 4: Audit & Unified Export\n• Kinematic + dynamic audit\n• Clean 50 Hz RL/Sim NPZ & 30 Hz CSV"]
     T --> E
@@ -59,6 +60,35 @@ flowchart LR
    - 预加载 GPU `NablaEngine` + `NablaMimic` + `SuperMimic-lite` 守护进程，热启动后单条 6s 动作端到端仅需 **10.53 s**（RTX 4080 Laptop）。
    - ~190 ms `MuJoCo 4.0` 严格 IEEE FP32 闭环验证，实时 SSE 物理进度条（`BALANCE → REFINE → VERIFY`）与优化前后 3D / 2D 橙色虚线对比。
    - 统一导出同时兼容 `robot-motion-editor` 与 `MLAB4_Fast` 的 `.npz` 及 30 Hz LAFAN1 `.csv`。
+
+---
+
+## Tiangong3 CAD-Calibrated Collision Model (`MLAB4_Fast`)
+
+`Retarget_X` 已将 [**MLAB4_Fast**](https://github.com/BenHuHuan/MLAB4_Fast) 的天工3 零网格解析碰撞体方案 **`tiangong3_capsule_v1`**（[`src/retarget_x/tiangong3_capsule_collision.py`](src/retarget_x/tiangong3_capsule_collision.py)）完整接入 Stage 1/2/4 与 Stage 3 `DTMR` 无头场景模型，实现 **重定向、物理 MPC 跟踪与下游 RL 训练三端碰撞几何完全一致**：
+
+- **零网格全解析原语（`39` primitives，`nmesh == 0`）**：100% 比特级保留原厂 CAD（`sdk_a_scene.xml`）全部刚体质量、惯量、关节限位、电枢与力矩范围，MuJoCo Warp 全程走闭式 `O(1)` `_primitive_narrowphase`（零 `plane_convex` / GJK / EPA / MultiCCD 开销）。
+- **精确拟合天工3 `1.35°` 跟趾脚底弧度**：每只脚采用 4 根变宽 `r=10 mm` 胶囊（`foot_{l,r}_{1..4}_collision`，`condim=3`），严格对齐 CAD 后跟（`z_min=-0.05677 m`）→ 前掌（`-0.05305 m`）→ 趾尖（`-0.05050 m`）斜率与内外侧梯形宽度，消除旧版水平 3 胶囊脚底在跖屈/蹬地/跑跳时的 `3.7–6.3 mm` 系统偏差。
+- **全身包络与复合关节自碰撞清理**：补齐骨盆 3 胶囊、躯干 2 横向胶囊 + 头顶/头球、髋大转子、双段大腿、前凸膝盖 + 小腿、肩肘腕与精确手端 TCP 胶囊（`z_min=-0.1046 m, condim=3`）；内置 **20 对复合关节 `<exclude>`**（3 对原生 + 17 对 2-hop 排除）与 **102 对显式 `<pair>`**（39 对全身-地面 `condim=3` + 63 对跨肢体自碰撞 `condim=1`）。
+
+### CAD Parity Benchmark (All 120 BONES-SEED Non-HOI Clips · 5,738 Sampled Frames)
+
+| Metric vs Full-Precision CAD (`sdk_a_scene.xml`) | Legacy `Retarget_X` (19 rough geoms / flat sole) | **`tiangong3_capsule_v1` (39 calibrated geoms)** | Improvement |
+|---|---:|---:|---:|
+| **Foot-Sole Clearance MAE / P50 / P95** | `2.993` / `1.769` / `8.166 mm` | **`0.724` / `0.195` / `2.593 mm`** | **MAE -75.8% (4.1×), P50 -89.0% (9.1×)** |
+| **Whole-Body Floor Clearance MAE / P50 / P95** | `3.259` / `2.005` / `8.328 mm` | **`0.536` / `0.195` / `2.207 mm`** | **MAE -83.6% (6.1×), P50 -90.3% (10.3×)** |
+| **Plantarflexed Push-Off (`+0.15 rad`) Sole Error** | `-5.632 mm` | **`-0.214 mm`** | **26.3× more accurate** |
+| **`home` / `knees_bent` Keyframe Sole Error** | `-0.025` / `-0.978 mm` | **`+0.005` / `+0.049 mm`** | **Sub-50 μm alignment, 0 self-contacts** |
+| **Mesh Geoms (`nmesh`) / Peak Active Contacts** | `0` / — | **`0` / max `28`** (`< EXEC_NCONMAX=60`) | **Pure O(1) `_primitive_narrowphase`** |
+
+```bash
+# Regenerate & audit Retarget_X Tiangong3 XMLs (optionally sync local DTMR models in lockstep)
+python scripts/sync_tiangong3_capsule_collision.py --dtmr-dir /path/to/DTMR
+
+# Optional: run strict CAD & MLAB4_Fast geom-by-geom parity tests
+TIANGONG3_CAD_SCENE_XML=/path/to/sdk_a_scene.xml MLAB4_FAST_SRC=/path/to/MLAB4_Fast/src \
+  pytest -v tests/test_tiangong3_capsule_collision.py
+```
 
 ---
 
@@ -218,11 +248,11 @@ Retarget_X/
 │   ├── index.html                          # Interactive dark-theme benchmark report + Trajectory Optimization hub
 │   └── assets/*.png                        # High-DPI benchmark & ablation charts
 ├── benchmark/tiangong3_bones_seed_nonhoi/  # Raw benchmark JSONs (120 hhtools / 18 DTMR / 8 Retarget_X)
-├── scripts/                                # Ablation, chart/HTML builders, `setup_tdot.sh` & `launch_tdot.sh`
-├── tests/                                  # `test_conditioning_and_audit.py` & `test_tdot.py`
+├── scripts/                                # `sync_tiangong3_capsule_collision.py`, ablation, chart/HTML builders, `setup_tdot.sh` & `launch_tdot.sh`
+├── tests/                                  # `test_conditioning_and_audit.py`, `test_tiangong3_capsule_collision.py` & `test_tdot.py`
 └── THIRD_PARTY_NOTICES.md                  # Upstream attributions for TDOT & bundled assets
 ```
 
 ## License & Credits
 
-Licensed under **Apache-2.0**. Built upon and integrating [human-humanoid-tools (hhtools)](https://github.com/Roboparty/human-humanoid-tools), [DTMR](https://github.com/nicolejrkim/DTMR), and [TDOT](https://github.com/BenHuHuan/TDOT). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for full upstream attributions. Benchmark clips derived from **Motion Data by Bones Studio (https://bones.studio/)**.
+Licensed under **Apache-2.0**. Built upon and integrating [human-humanoid-tools (hhtools)](https://github.com/Roboparty/human-humanoid-tools), [DTMR](https://github.com/nicolejrkim/DTMR), [MLAB4_Fast](https://github.com/BenHuHuan/MLAB4_Fast) (`tiangong3_capsule_v1` collision calibration), and [TDOT](https://github.com/BenHuHuan/TDOT). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for full upstream attributions. Benchmark clips derived from **Motion Data by Bones Studio (https://bones.studio/)**.
