@@ -8,6 +8,7 @@ mass_kg: 65.82
 model:
   headless_scene: assets/tiangong3/scene_mjx_torque_tracking_headless.xml
   dtmr_robot_name: tiangong3_headless
+  collision_profile: tiangong3_capsule_v1
 
 joint_names:
   - hip_pitch_l_joint
@@ -53,13 +54,17 @@ pd:
        7.4, 7.4, 5.9, 5.9, 5.0, 2.0, 2.0,
        7.4, 7.4, 5.9, 5.9, 5.0, 2.0, 2.0]
 
+# MLAB4_Fast tiangong3_capsule_v1: 4 tapered r=10mm sole capsules per foot matching
+# exact CAD 1.35-deg heel-to-toe rocker slope (0.27-0.32 mm MAE vs full CAD meshes).
 foot_collision_geoms:
-  - left_foot1_collision
-  - left_foot2_collision
-  - left_foot3_collision
-  - right_foot1_collision
-  - right_foot2_collision
-  - right_foot3_collision
+  - foot_l_1_collision
+  - foot_l_2_collision
+  - foot_l_3_collision
+  - foot_l_4_collision
+  - foot_r_1_collision
+  - foot_r_2_collision
+  - foot_r_3_collision
+  - foot_r_4_collision
 
 conditioning:
   savgol_window: 7
